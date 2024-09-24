@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
 using System.Collections.Generic;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Xml.Linq;
 
 namespace seredes
 {
@@ -16,6 +18,9 @@ namespace seredes
     {
         List<Persona> Listadati;
         string file = "dati.txt";
+
+
+        bool trovato = false;
         public Form1()
         {
             InitializeComponent();
@@ -80,26 +85,34 @@ namespace seredes
 
         private void Read_Click(object sender, EventArgs e)
         {
-            /*Lettura da un file (con controllo esistenza)
-            StreamReader sr = new StreamReader(file);
-             string riga;
-             do
-             {
-                 riga = file.ReadLine();
-                 if (riga != null)
-                 {
-                    Visudati.Clear();
-                     for (int i = 0; i < dim; i++)
-                     {
-                        Visudati.Items.Add($"");
-                     }
-                 }
-             }
-             while (!File.EndOfStream);
-             File.Close();*/
-         }
+            string vnome = name.Text;        
+            string vcogn = Surname.Text;     
+            string veta = Age.Text;          
 
-         private void Save_Click(object sender, EventArgs e)
+            for (int i = 0; i < Listadati.Count; i++)
+            {
+
+                if (Listadati[i].Nome == vnome && Listadati[i].Cognome == vcogn && Listadati[i].Eta == veta)
+                {
+                    trovato = true;
+
+                    break;
+                }
+            }
+
+            if (trovato)
+            {
+                nnome.Text = vnome;
+                ncogn.Text = vcogn;
+                neta.Text = veta;
+            }
+            else
+            {
+                MessageBox.Show("Studente non trovato.");
+            }
+        }
+
+        private void Save_Click(object sender, EventArgs e)
          {
              StreamWriter sw = new StreamWriter(file);
              for (int i = 0; i < Listadati.Count; i++)
@@ -112,11 +125,56 @@ namespace seredes
 
          private void Delate_Click(object sender, EventArgs e)
          {
-            int sel = Visudati.SelectedIndex;
-            Listadati.RemoveAt(sel);
-         }
-     }
-     class Persona
+            string nomecanc = name.Text;
+            string cogncanc = Surname.Text;
+            string etacanc = Age.Text;
+            bool trovato = false;
+
+            for (int i = 0; i < Listadati.Count; i++)
+            {
+                if (Listadati[i].Nome == nomecanc && Listadati[i].Cognome == cogncanc && Listadati[i].Eta == etacanc)
+                {
+                    Listadati.RemoveAt(i);
+                    Visudati.Items.RemoveAt(i);
+                    trovato = true;
+                    break;
+                }
+            }
+
+            if (trovato)
+            {
+                MessageBox.Show("Studente cancellato con successo!");
+            }
+            else
+            {
+                MessageBox.Show("Studente non trovato.");
+            }
+
+
+        }
+
+        private void Update_Click(object sender, EventArgs e)
+        {
+            string nname = nnome.Text;
+            string ncognome = ncogn.Text;
+            string nEta = neta.Text;
+            for (int i = 0; i < Listadati.Count; i++)
+            {
+                if (trovato == true)
+                {
+
+                    Listadati[i].Nome = nname;
+                    Listadati[i].Cognome = ncognome;
+                    Listadati[i].Eta = nEta;
+
+                    Visudati.Items[i] = Listadati[i].ToString();
+                        MessageBox.Show("Studente cancellato con successo!");
+                    break;
+                }
+            }
+        }
+    }
+    class Persona
      {
          public string Nome { get; set; }
          public string Cognome { get; set; }
